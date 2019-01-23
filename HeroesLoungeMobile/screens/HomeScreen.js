@@ -7,12 +7,25 @@ import {
   Text,
   TouchableOpacity,
   View,
+  FlatList, 
+  ListItem
 } from 'react-native';
+
+import sortBy from 'array-sort-by';
 import { WebBrowser } from 'expo';
+import { Linking } from 'react-native';
+import Touchable from 'react-native-platform-touchable';
 
 import { MonoText } from '../components/StyledText';
+import moment from 'moment';
+import { black } from 'ansi-colors';
 
 export default class HomeScreen extends React.Component {
+  constructor(props){
+    super(props);
+    this.state ={ isLoading: true}
+  }
+  
   static navigationOptions = {
     header: null,
   };
@@ -21,47 +34,85 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View style={styles.welcomeContainer}>
-            <Image
-              source={
-                __DEV__
-                  ? require('../assets/images/robot-dev.png')
-                  : require('../assets/images/robot-prod.png')
-              }
-              style={styles.welcomeImage}
-            />
-          </View>
+          <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <FlatList style={styles.FlatList}
+          ItemSeparatorComponent={this.renderSeparator}
+          data={this.state.dataSource}
+          renderItem={({item}) => <View style={styles.optionTextContainer}>
+            <Touchable onPress={ ()=>{ Linking.openURL(item.channel.url)}}>
+              <View>
+                  <Text>Teams:  {item.teams[0].title} vs {item.teams[1].title}</Text>
+                  <Text>Caster: {item.casters[0].title}</Text>
+                  <Text>Time:   {moment(item.wbp).format('DD.MM.YYYY - HH.ss')}</Text>
+              </View>
+            </Touchable>
+          </View>}
+          keyExtractor={({id}, index) => id}
+        />
+      </View>
 
-          <View style={styles.getStartedContainer}>
-            {this._maybeRenderDevelopmentModeWarning()}
-
-            <Text style={styles.getStartedText}>Get started by opening</Text>
-
-            <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-              <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
-            </View>
-
-            <Text style={styles.getStartedText}>
-              Change this text and your app will automatically reload.
-            </Text>
-          </View>
-
-          <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-            </TouchableOpacity>
-          </View>
         </ScrollView>
-
-        <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-
-          <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-            <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
-          </View>
-        </View>
       </View>
     );
+  }
+
+  handleClick = () => {
+    Linking.canOpenURL(this.props.url).then(supported => {
+      if (supported) {
+        Linking.openURL(this.props.url);
+      } else {
+        console.log("Don't know how to open URI: " + this.props.url);
+      }
+    });
+  };
+
+  renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+
+          backgroundColor: "#CED0CE",
+
+        }}
+      />
+    );
+};
+
+  componentDidMount(){
+    var yesterday = moment().subtract(1, 'days').format('YYYY-MM-DD')
+    var tomorrow = moment().add(1, 'days').format('YYYY-MM-DD')
+    var url = 'https://heroeslounge.gg/api/v1/matches/withApprovedCastBetween/' + yesterday + '/' + tomorrow;
+    var options = { 
+      headers: {
+        "Content-Type": "application/json"
+      } 
+    }
+    return fetch(url, options)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        // convert to proper array
+        // alert
+        var matches = []
+          for (var key in responseJson) {
+            if (responseJson.hasOwnProperty(key)) {
+                //alert(key + " -> " + JSON.stringify(responseJson[key]));
+                matches.push(responseJson[key])
+            }
+          }
+        //sort that array by time and date
+        sortBy(matches, (s) => moment(s.wbp).format("YYYYMMDDhhmm"));
+
+        this.setState({
+          isLoading: false,
+          dataSource: matches
+        }, function(){
+        });
+        
+      })
+      .catch((error) =>{
+        console.error(error);
+      });
   }
 
   _maybeRenderDevelopmentModeWarning() {
@@ -185,4 +236,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#2e78b7',
   },
+  FlatList:{
+
+  }
 });

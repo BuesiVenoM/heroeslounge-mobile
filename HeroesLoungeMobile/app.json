@@ -4,6 +4,7 @@
     "slug": "HeroesLoungeMobile",
     "privacy": "public",
     "sdkVersion": "32.0.0",
+    "description": "HeroesLounge Mobile App",
     "platforms": [
       "ios",
       "android"
@@ -24,6 +25,11 @@
     ],
     "ios": {
       "supportsTablet": true
+    },"android":{
+      "package":"ch.sebiit.heroesLoungeMobile",
+       "versionCode":1 , 
+       "icon":"./assets/images/icon.png"
+      }
     }
-  }
+ 
 }
