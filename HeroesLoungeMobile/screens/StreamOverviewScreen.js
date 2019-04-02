@@ -1,5 +1,4 @@
 import React from 'react';
-import DatePicker from 'react-native-datepicker';
 import {
   Image,
   Platform,
@@ -21,11 +20,10 @@ import { MonoText } from '../components/StyledText';
 import moment from 'moment';
 import { black } from 'ansi-colors';
 
-
-export default class HomeScreen extends React.Component {
+export default class StreamOverview extends React.Component {
   constructor(props){
     super(props);
-    this.state ={ isLoading: true, startDate:"2019-04-02", endDate:""}
+    this.state ={ isLoading: true}
   }
   
   static navigationOptions = {
@@ -34,68 +32,26 @@ export default class HomeScreen extends React.Component {
 
   render() {
     return (
-      // Try setting `justifyContent` to `center`.
-      // Try setting `flexDirection` to `row`.
-      <View style={{
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-      }}>
-        <View style={{height: 50, backgroundColor: 'powderblue'}}><Text>Placeholder</Text></View>
-        <View><Text>Startdatum</Text>
-          <DatePicker
-                style={{width: 200}}
-                date={this.state.startDate}
-                mode="date"
-                placeholder="select date"
-                format="YYYY-MM-DD"
-                minDate="2019-04-01"
-                maxDate="2019-04-03"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                customStyles={{
-                  dateIcon: {
-                    position: 'absolute',
-                    left: 0,
-                    top: 4,
-                    marginLeft: 0
-                  },
-                  dateInput: {
-                    marginLeft: 36
-                  }
-                  // ... You can check the source to find the other keys.
-                }}
-                onDateChange={(startDate) => {this.setState({startDate: startDate})}}
-              />
-              <Text>Enddatum</Text>
-          <DatePicker
-                style={{width: 200}}
-                date={this.state.endDate}
-                mode="date"
-                placeholder="select date"
-                format="YYYY-MM-DD"
-                minDate="2019-04-01"
-                maxDate="2019-04-03"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                customStyles={{
-                  dateIcon: {
-                    position: 'absolute',
-                    left: 0,
-                    top: 4,
-                    marginLeft: 0
-                  },
-                  dateInput: {
-                    marginLeft: 36
-                  }
-                  // ... You can check the source to find the other keys.
-                }}
-                onDateChange={(endDate) => {this.setState({endDate: endDate})}}
-              />
+      <View style={styles.container}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+          <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <FlatList style={styles.FlatList}
+          ItemSeparatorComponent={this.renderSeparator}
+          data={this.state.dataSource}
+          renderItem={({item}) => <View style={styles.optionTextContainer}>
+            <Touchable onPress={ ()=>{ Linking.openURL(item.channel.url)}}>
+              <View>
+                  <Text>Teams:  {item.teams[0].title} vs {item.teams[1].title}</Text>
+                  <Text>Caster: {item.casters[0].title}</Text>
+                  <Text>Time:   {moment(item.wbp).format('DD.MM.YYYY - HH.ss')}</Text>
               </View>
-        <View style={{height: 50, backgroundColor: 'powderblue'}}><Text>Test1</Text></View>
-        <View style={{height: 50, backgroundColor: 'skyblue'}}><Text>Test2</Text></View>
-        <View style={{height: 50, backgroundColor: 'steelblue'}}><Text>>est3</Text></View>
+            </Touchable>
+          </View>}
+          keyExtractor={({id}, index) => id}
+        />
+      </View>
+
+        </ScrollView>
       </View>
     );
   }

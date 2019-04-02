@@ -6,6 +6,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import StreamOverviewScreen from '../screens/StreamOverviewScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -53,8 +54,23 @@ SettingsStack.navigationOptions = {
   ),
 };
 
+const StreamOverviewStack = createStackNavigator({
+  Settings: StreamOverviewScreen,
+});
+
+StreamOverviewStack.navigationOptions = {
+  tabBarLabel: 'Stream Overview',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === 'ios' ? 'ios-film' : 'md-film'}
+    />
+  ),
+};
+
 export default createBottomTabNavigator({
   HomeStack,
+  StreamOverviewStack,
   LinksStack,
   SettingsStack,
 });
