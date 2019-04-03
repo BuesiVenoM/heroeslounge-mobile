@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   View,
   FlatList, 
-  ListItem
+  ListItem,
+  Button
 } from 'react-native';
 
 import sortBy from 'array-sort-by';
@@ -18,19 +19,25 @@ import { Linking } from 'react-native';
 import Touchable from 'react-native-platform-touchable';
 
 import { MonoText } from '../components/StyledText';
-import moment from 'moment';
+import moment, { months } from 'moment';
 import { black } from 'ansi-colors';
 
 
 export default class HomeScreen extends React.Component {
   constructor(props){
     super(props);
-    this.state ={ isLoading: true, startDate:"2019-04-02", endDate:""}
+    this.state ={ isLoading: true, startDate: moment().format('YYYY-MM-DD'), endDate:moment().add(1, 'months').format('YYYY-MM-DD')}
   }
   
   static navigationOptions = {
     header: null,
   };
+
+  selectionStreams(){
+    console.log("Show streams between: " + this.state.startDate + " and: " + this.state.endDate)
+    this.props.navigation.navigate("SelectionStreams", {startDate: this.state.startDate, endDate: this.state.endDate})
+
+  }
 
   render() {
     return (
@@ -41,7 +48,7 @@ export default class HomeScreen extends React.Component {
         flexDirection: 'column',
         justifyContent: 'space-between',
       }}>
-        <View style={{height: 50, backgroundColor: 'powderblue'}}><Text>Placeholder</Text></View>
+        <View style={{height: 50, backgroundColor: 'powderblue'}}><Text>select the range of casted streams</Text></View>
         <View><Text>Startdatum</Text>
           <DatePicker
                 style={{width: 200}}
@@ -49,8 +56,8 @@ export default class HomeScreen extends React.Component {
                 mode="date"
                 placeholder="select date"
                 format="YYYY-MM-DD"
-                minDate="2019-04-01"
-                maxDate="2019-04-03"
+                minDate={moment().format("YYYY-MM-DD")}
+                maxDate={moment().add(1, "months").format("YYYY-MM-DD")}
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 customStyles={{
@@ -74,8 +81,8 @@ export default class HomeScreen extends React.Component {
                 mode="date"
                 placeholder="select date"
                 format="YYYY-MM-DD"
-                minDate="2019-04-01"
-                maxDate="2019-04-03"
+                minDate={moment().format("YYYY-MM-DD")}
+                maxDate={moment().add(2, "months").format("YYYY-MM-DD")}
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 customStyles={{
@@ -93,9 +100,13 @@ export default class HomeScreen extends React.Component {
                 onDateChange={(endDate) => {this.setState({endDate: endDate})}}
               />
               </View>
+              <Button
+                onPress={this.selectionStreams.bind(this)}
+                title="show streams"
+                color="#841584"
+                accessibilityLabel="show streams in selection range"
+              />
         <View style={{height: 50, backgroundColor: 'powderblue'}}><Text>Test1</Text></View>
-        <View style={{height: 50, backgroundColor: 'skyblue'}}><Text>Test2</Text></View>
-        <View style={{height: 50, backgroundColor: 'steelblue'}}><Text>>est3</Text></View>
       </View>
     );
   }
