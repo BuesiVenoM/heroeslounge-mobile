@@ -7,6 +7,7 @@ import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import StreamOverviewScreen from '../screens/StreamOverviewScreen';
+import SelectionStreamsScreen from '../screens/SelectionStreamsScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -68,9 +69,12 @@ StreamOverviewStack.navigationOptions = {
   ),
 };
 
+
+
 export default createBottomTabNavigator({
   HomeStack,
   StreamOverviewStack,
   LinksStack,
   SettingsStack,
+  SelectionStreamsScreen
 });
