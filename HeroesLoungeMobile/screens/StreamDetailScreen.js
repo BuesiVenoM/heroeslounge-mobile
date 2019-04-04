@@ -23,7 +23,7 @@ import { black } from 'ansi-colors';
 export default class StreamDetail extends React.Component {
   constructor(props){
     super(props);
-    this.state ={ isLoading: true, matchId: 0}
+    this.state ={ isLoading: true, matchId: 0, team1: 0, team2:0, team1logo:"",team2logo:"", teams:0}
   }
   
   static navigationOptions = {
@@ -31,23 +31,28 @@ export default class StreamDetail extends React.Component {
   };
 
   render() {
+    this.state.teams = this.props.navigation.getParam('teams', 0);
     this.state.matchId = this.props.navigation.getParam('matchId', 0);
     return (
 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5FCFF'}}>
    <View style={{flex:1, backgroundColor:"red", width: "100%"}}>
    <Image
-          style={{width: 50, height: 50}}
-          source={{uri: 'https://heroeslounge.gg/storage/app/uploads/public/5a9/1b1/38b/5a91b138bc3ab994358442.png'}}
+          style={{width: 100, height: 100}}
+          source={{uri: this.state.team1logo.path}}
         />
-    <Text>{this.state.matchId}</Text>
-    <Text>hello world 1.........</Text>
-    <Text>hello world 1.........</Text>
+    <Text>{this.state.teams[0].id}</Text>
+    <Text>{this.state.teams[0].title}</Text>
+    <Text>{this.state.teams[0].short_description}</Text>
     <Text>hello world 1.........</Text>
     </View>
       <View style={{flex:1, backgroundColor:"blue", width:"100%"}}>
-    <Text>hello world 2.........</Text>
-    <Text>hello world 2.........</Text>
-    <Text>hello world 2.........</Text>
+      <Image
+          style={{width: 100, height: 100}}
+          source={{uri: this.state.team2logo.path}} 
+        />
+    <Text>{this.state.teams[1].id}</Text>
+    <Text>{this.state.teams[1].title}</Text>
+    <Text>{this.state.teams[1].short_description}</Text>
     <Text>hello world 2.........</Text>
     </View>
     </View>
@@ -55,20 +60,43 @@ export default class StreamDetail extends React.Component {
   }
 
   componentDidMount(){
-    //var url = 'https://heroeslounge.gg/api/v1/matches/withApprovedCastBetween/' + this.props.navigation.getParam('startDate', moment().format("YYYY-MM-DD")) + '/' + this.props.navigation.getParam('endDate', moment().format("YYYY-MM-DD"));
-    var url = 'https://heroeslounge.gg/api/v1/matches/' + this.props.navigation.getParam('matchId', 1) + "/teams";
-    console.log(url)
-    this.state.matchId = this.props.navigation.getParam('matchId', 1)
-    var options = { 
-      headers: {
-        "Content-Type": "application/json"
-      } 
-    }
-    return fetch(url, options)
-      .then((response) => response.json())
-      .catch((error) =>{
-        console.error(error);
-      });
+    this.state.teams = this.props.navigation.getParam('teams', 0);
+    console.log(this.state.teams);
+    //this.state.team1 = fetch('https://heroeslounge.gg/api/v1/teams/' + this.props.navigation.getParam('team1', 0));
+
+    var request_1_url = 'https://heroeslounge.gg/api/v1/teams/' + this.state.teams[0].id;
+    var request_2_url = 'https://heroeslounge.gg/api/v1/teams/' + this.state.teams[1].id;
+    var request_3_url = 'https://heroeslounge.gg/api/v1/teams/' + this.state.teams[0].id + '/logo';
+    var request_4_url = 'https://heroeslounge.gg/api/v1/teams/' + this.state.teams[1].id + '/logo';
+
+    console.log(request_1_url);
+    console.log(request_2_url);
+    console.log(request_3_url);
+    console.log(request_4_url);
+
+
+
+    fetch(request_1_url).then((response) => response.json()).then((responseData)  => {
+        this.setState({
+          team1: responseData
+        });
+    }).then(()=>{
+        fetch(request_2_url).then((response) => response.json()).then((responseData) => {
+         this.setState({
+            team2: responseData
+         });
+     }).then(()=>{
+      fetch(request_3_url).then((response) => response.json()).then((responseData) => {
+       this.setState({
+          team1logo: responseData
+       });
+   }).then(()=>{
+    fetch(request_4_url).then((response) => response.json()).then((responseData) => {
+     this.setState({
+        team2logo: responseData
+     });
+ }).done();}).done();}).done();
+    }).done();
   }
 
   _maybeRenderDevelopmentModeWarning() {
