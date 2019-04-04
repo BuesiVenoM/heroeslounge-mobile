@@ -23,7 +23,7 @@ import { black } from 'ansi-colors';
 export default class StreamDetail extends React.Component {
   constructor(props){
     super(props);
-    this.state ={ isLoading: true, matchId: 0, team1: 0, team2:0, team1logo:"",team2logo:"", teams:0}
+    this.state ={ isLoading: true, matchId: 0, team1: 0, team2:0, team1logo:"",team2logo:"", teams:0, team1sloths: [], team2sloths: []}
   }
   
   static navigationOptions = {
@@ -31,32 +31,78 @@ export default class StreamDetail extends React.Component {
   };
 
   render() {
+    console.log(this.state.team1sloths)
     this.state.teams = this.props.navigation.getParam('teams', 0);
     this.state.matchId = this.props.navigation.getParam('matchId', 0);
     return (
 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5FCFF'}}>
-   <View style={{flex:1, backgroundColor:"red", width: "100%"}}>
+   <View style={{flex:4, backgroundColor:"#f44336", opacity:50,  width: "100%"}}>
+   <Text style={styles.titleText}>Team 1</Text>
    <Image
           style={{width: 100, height: 100}}
           source={{uri: this.state.team1logo.path}}
         />
-    <Text>{this.state.teams[0].id}</Text>
-    <Text>{this.state.teams[0].title}</Text>
-    <Text>{this.state.teams[0].short_description}</Text>
-    <Text>hello world 1.........</Text>
+
+    <Text>Teamname: {this.state.teams[0].title}</Text>
+    <Text>Description: {this.state.teams[0].short_description}</Text>
+    <Text>Sloths:</Text>
+    <ScrollView>
+    {
+      this.state.team1sloths.map(( sloth, key ) =>
+      (
+        <View key = { key }>
+            <Text>{ sloth.title }</Text>
+            <Text>MMR: { sloth.mmr }</Text>
+            <Text>Role: { this.getRole(sloth.role_id) }</Text>
+        </View>
+      ))
+    }
+    </ScrollView>
     </View>
-      <View style={{flex:1, backgroundColor:"blue", width:"100%"}}>
+    <View style={{backgroundColor:"white", width:"100%"}}>
+    <Text style={styles.titleText}>VS</Text>
+    </View>
+    <View style={{flex:4, backgroundColor:"#2196f3", opacity:50, width:"100%"}}>
+    <Text style={styles.titleText}>Team 2</Text>
       <Image
           style={{width: 100, height: 100}}
           source={{uri: this.state.team2logo.path}} 
         />
-    <Text>{this.state.teams[1].id}</Text>
-    <Text>{this.state.teams[1].title}</Text>
-    <Text>{this.state.teams[1].short_description}</Text>
-    <Text>hello world 2.........</Text>
+    <Text>Teamname: {this.state.teams[1].title}</Text>
+    <Text>Description: {this.state.teams[1].short_description}</Text>
+    <Text>Sloths:</Text>
+    <ScrollView>
+    {
+      this.state.team1sloths.map(( sloth, key ) =>
+      (
+        <View key = { key }>
+            <Text>Name: { sloth.title }</Text>
+            <Text>MMR: { sloth.mmr }</Text>
+            <Text>Role: { this.getRole(sloth.role_id) }</Text>
+        </View>
+      ))
+    }
+    </ScrollView>
     </View>
     </View>
     );
+  }
+
+  getRole(role) {
+    switch(role) {
+      case '1':
+        return 'Tank';
+      case '2':
+        return 'Support';
+      case '3':
+        return 'Flex';
+      case '4':
+        return 'Bruiser';
+      case '5':
+        return 'Assassin';
+      default:
+        return 'Not defined!';
+    }
   }
 
   componentDidMount(){
@@ -68,13 +114,8 @@ export default class StreamDetail extends React.Component {
     var request_2_url = 'https://heroeslounge.gg/api/v1/teams/' + this.state.teams[1].id;
     var request_3_url = 'https://heroeslounge.gg/api/v1/teams/' + this.state.teams[0].id + '/logo';
     var request_4_url = 'https://heroeslounge.gg/api/v1/teams/' + this.state.teams[1].id + '/logo';
-
-    console.log(request_1_url);
-    console.log(request_2_url);
-    console.log(request_3_url);
-    console.log(request_4_url);
-
-
+    var request_5_url = 'https://heroeslounge.gg/api/v1/teams/' + this.state.teams[0].id + '/sloths';
+    var request_6_url = 'https://heroeslounge.gg/api/v1/teams/' + this.state.teams[1].id + '/sloths';
 
     fetch(request_1_url).then((response) => response.json()).then((responseData)  => {
         this.setState({
@@ -95,7 +136,17 @@ export default class StreamDetail extends React.Component {
      this.setState({
         team2logo: responseData
      });
- }).done();}).done();}).done();
+ }).then(()=>{
+  fetch(request_5_url).then((response) => response.json()).then((responseData) => {
+   this.setState({
+      team1sloths: responseData
+   });
+}).then(()=>{
+  fetch(request_6_url).then((response) => response.json()).then((responseData) => {
+   this.setState({
+      team2sloths: responseData
+   });
+}).done();}).done();}).done();}).done();}).done();
     }).done();
   }
 
@@ -137,6 +188,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  titleText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center'
   },
   developmentModeText: {
     marginBottom: 20,
