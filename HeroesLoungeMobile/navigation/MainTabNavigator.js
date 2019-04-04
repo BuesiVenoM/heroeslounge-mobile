@@ -7,7 +7,8 @@ import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import StreamOverviewScreen from '../screens/StreamOverviewScreen';
-import SelectionStreamsScreen from '../screens/SelectionStreamsScreen';
+import InfoScreen from '../screens/InfoScreen';
+import SelectionStreamScreen from '../screens/SelectionStreamsScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -20,8 +21,8 @@ HomeStack.navigationOptions = {
       focused={focused}
       name={
         Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
+          ? `ios-home${focused ? '' : '-outline'}`
+          : 'md-home'
       }
     />
   ),
@@ -60,7 +61,7 @@ const StreamOverviewStack = createStackNavigator({
 });
 
 StreamOverviewStack.navigationOptions = {
-  tabBarLabel: 'Stream Overview',
+  tabBarLabel: 'Today',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -69,12 +70,39 @@ StreamOverviewStack.navigationOptions = {
   ),
 };
 
+const InfoStack = createStackNavigator({
+  Settings: InfoScreen,
+});
 
+InfoStack.navigationOptions = {
+  tabBarLabel: 'Infos',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === 'ios' ? 'ios-information-circle' : 'md-information-circle'}
+    />
+  ),
+};
+
+const StreamSelectionStack = createStackNavigator({
+  Settings: SelectionStreamScreen,
+});
+
+StreamSelectionStack.navigationOptions = {
+  tabBarLabel: 'Selecion',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === 'ios' ? 'ios-film' : 'md-film'}
+    />
+  ),
+};
 
 export default createBottomTabNavigator({
   HomeStack,
   StreamOverviewStack,
+  StreamSelectionStack,
   LinksStack,
   SettingsStack,
-  SelectionStreamsScreen
+  InfoStack
 });

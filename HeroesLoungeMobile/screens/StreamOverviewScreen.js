@@ -23,14 +23,20 @@ import { black } from 'ansi-colors';
 export default class StreamOverview extends React.Component {
   constructor(props){
     super(props);
-    this.state ={ isLoading: true}
+    this.state ={ isLoading: true, isLoading: true, startDate: 0, endDate: 0, matchId: 0, teams: ""}
   }
   
   static navigationOptions = {
-    header: null,
+    title: 'Streams Today',
   };
 
+  streamDetail(){
+    this.props.navigation.navigate("StreamDetails", {matchId: this.state.matchId, team1: this.state.team1, team2: this.state.team2, teams: this.state.teams})
+  }
+
   render() {
+    this.state.startDate = this.props.navigation.getParam('startDate', moment().format("YYYY-MM-DD"));
+    this.state.endDate = this.props.navigation.getParam('endDate', moment().format("YYYY-MM-DD"));
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -39,14 +45,28 @@ export default class StreamOverview extends React.Component {
           ItemSeparatorComponent={this.renderSeparator}
           data={this.state.dataSource}
           renderItem={({item}) => <View style={styles.optionTextContainer}>
-            <Touchable onPress={ ()=>{ Linking.openURL(item.channel.url)}}>
+            <Touchable onPress={() => { this.setState({teams: item.teams, team1: item.teams[0], team2: item.teams[1]}); this.state.teams = item.teams; this.streamDetail.bind(this)(); }}>
+              <View>
+                  <Text>Teams:  {item.teams[0].title} vs {item.teams[1].title}</Text>
+                  <Text>Caster: {item.casters[0].title}</Text>
+                  <Text>Time:   {moment(item.wbp).format('DD.MM.YYYY - HH.ss')}</Text>
+                  <Text>
+            </Text>
+              </View>
+            </Touchable>
+
+          
+          {/*
+            <Touchable onPress={ ()=>{ Linking.openURL(item.channels[0].url)}}>
               <View>
                   <Text>Teams:  {item.teams[0].title} vs {item.teams[1].title}</Text>
                   <Text>Caster: {item.casters[0].title}</Text>
                   <Text>Time:   {moment(item.wbp).format('DD.MM.YYYY - HH.ss')}</Text>
               </View>
-            </Touchable>
+            </Touchable> 
+            */}
           </View>}
+          
           keyExtractor={({id}, index) => id}
         />
       </View>
@@ -82,7 +102,7 @@ export default class StreamOverview extends React.Component {
   componentDidMount(){
     var yesterday = moment().subtract(1, 'days').format('YYYY-MM-DD')
     var tomorrow = moment().add(1, 'days').format('YYYY-MM-DD')
-    var url = 'https://heroeslounge.gg/api/v1/matches/withApprovedCastBetween/' + yesterday + '/' + tomorrow;
+    var url = 'https://heroeslounge.gg/api/v1/matches/withApprovedCastBetween/'+ moment().format("YYYY-MM-DD") + '/' + moment().format("YYYY-MM-DD");
     var options = { 
       headers: {
         "Content-Type": "application/json"

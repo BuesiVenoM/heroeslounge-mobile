@@ -28,6 +28,7 @@ export default class SelectionStreams extends React.Component {
   
   static navigationOptions = {
     header: null,
+    title: 'Streams Selection',
   };
 
   streamDetail(){

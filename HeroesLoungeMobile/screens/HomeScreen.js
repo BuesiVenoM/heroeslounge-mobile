@@ -30,7 +30,7 @@ export default class HomeScreen extends React.Component {
   }
   
   static navigationOptions = {
-    header: null,
+    title: 'Home',
   };
 
   selectionStreams(){
@@ -47,8 +47,9 @@ export default class HomeScreen extends React.Component {
         flexDirection: 'column',
         justifyContent: 'space-between',
       }}>
-        <View style={{height: 50, backgroundColor: 'powderblue'}}><Text>select the range of casted streams</Text></View>
-        <View><Text>Startdatum</Text>
+        <View>
+          <Text>Select the range of the casted streams you want to know</Text>
+        <View style={{ flexDirection: "row" }}><Text>start date:</Text>
           <DatePicker
                 style={{width: 200}}
                 date={this.state.startDate}
@@ -73,7 +74,8 @@ export default class HomeScreen extends React.Component {
                 }}
                 onDateChange={(startDate) => {this.setState({startDate: startDate})}}
               />
-              <Text>Enddatum</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}><Text>end date:</Text>
           <DatePicker
                 style={{width: 200}}
                 date={this.state.endDate}
@@ -101,11 +103,11 @@ export default class HomeScreen extends React.Component {
               </View>
               <Button
                 onPress={this.selectionStreams.bind(this)}
-                title="show streams"
-                color="#841584"
+                title="show streams in range"
+                color="#0069c0"
                 accessibilityLabel="show streams in selection range"
               />
-        <View style={{height: 50, backgroundColor: 'powderblue'}}><Text>Test1</Text></View>
+        </View>
       </View>
     );
   }

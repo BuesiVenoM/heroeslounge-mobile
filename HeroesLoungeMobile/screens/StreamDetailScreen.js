@@ -27,7 +27,7 @@ export default class StreamDetail extends React.Component {
   }
   
   static navigationOptions = {
-    header: null,
+    title: 'Streams Details',
   };
 
   render() {
@@ -46,14 +46,16 @@ export default class StreamDetail extends React.Component {
     <Text>Teamname: {this.state.teams[0].title}</Text>
     <Text>Description: {this.state.teams[0].short_description}</Text>
     <Text>Sloths:</Text>
+    <View style={styles.separator} />
     <ScrollView>
     {
       this.state.team1sloths.map(( sloth, key ) =>
       (
-        <View key = { key }>
+        <View key = { key } style={styles.container}>
             <Text>{ sloth.title }</Text>
             <Text>MMR: { sloth.mmr }</Text>
             <Text>Role: { this.getRole(sloth.role_id) }</Text>
+            <View style={styles.separator} />
         </View>
       ))
     }
@@ -71,14 +73,16 @@ export default class StreamDetail extends React.Component {
     <Text>Teamname: {this.state.teams[1].title}</Text>
     <Text>Description: {this.state.teams[1].short_description}</Text>
     <Text>Sloths:</Text>
+    <View style={styles.separator} />
     <ScrollView>
     {
       this.state.team1sloths.map(( sloth, key ) =>
       (
-        <View key = { key }>
+        <View key = { key } style={styles.container}>
             <Text>Name: { sloth.title }</Text>
             <Text>MMR: { sloth.mmr }</Text>
             <Text>Role: { this.getRole(sloth.role_id) }</Text>
+            <View style={styles.separator} />
         </View>
       ))
     }
@@ -188,6 +192,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#707080',
+    width: '100%',
+  },
+  container: {
+    flex: 1,
+    paddingTop: 0,
   },
   titleText: {
     fontSize: 20,
