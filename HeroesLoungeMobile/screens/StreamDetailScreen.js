@@ -31,32 +31,41 @@ export default class StreamDetail extends React.Component {
   };
 
   render() {
-    this.state.matchID = this.props.navigation.getParam('starmatchID', 0);
+    this.state.matchId = this.props.navigation.getParam('matchId', 0);
     return (
-        <View>
-      <Text>{this.state.matchId}</Text>
-      </View>
+<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5FCFF'}}>
+   <View style={{flex:1, backgroundColor:"red", width: "100%"}}>
+   <Image
+          style={{width: 50, height: 50}}
+          source={{uri: 'https://heroeslounge.gg/storage/app/uploads/public/5a9/1b1/38b/5a91b138bc3ab994358442.png'}}
+        />
+    <Text>{this.state.matchId}</Text>
+    <Text>hello world 1.........</Text>
+    <Text>hello world 1.........</Text>
+    <Text>hello world 1.........</Text>
+    </View>
+      <View style={{flex:1, backgroundColor:"blue", width:"100%"}}>
+    <Text>hello world 2.........</Text>
+    <Text>hello world 2.........</Text>
+    <Text>hello world 2.........</Text>
+    <Text>hello world 2.........</Text>
+    </View>
+    </View>
     );
   }
 
   componentDidMount(){
     //var url = 'https://heroeslounge.gg/api/v1/matches/withApprovedCastBetween/' + this.props.navigation.getParam('startDate', moment().format("YYYY-MM-DD")) + '/' + this.props.navigation.getParam('endDate', moment().format("YYYY-MM-DD"));
-    var url = 'https://heroeslounge.gg/api/v1/matches/' + this.props.navigation.getParam('matchID', 1) + "/teams";
+    var url = 'https://heroeslounge.gg/api/v1/matches/' + this.props.navigation.getParam('matchId', 1) + "/teams";
     console.log(url)
+    this.state.matchId = this.props.navigation.getParam('matchId', 1)
+    var options = { 
+      headers: {
+        "Content-Type": "application/json"
+      } 
+    }
     return fetch(url, options)
       .then((response) => response.json())
-      .then((responseJson) => {
-          console.log(responseJson)
-        // convert to proper array
-        // alert
-
-        this.setState({
-          isLoading: false,
-          dataSource: matches
-        }, function(){
-        });
-        
-      })
       .catch((error) =>{
         console.error(error);
       });

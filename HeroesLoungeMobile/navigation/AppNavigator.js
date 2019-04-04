@@ -5,9 +5,12 @@ import MainTabNavigator from './MainTabNavigator';
 
 import SelectionStreams from "../screens/SelectionStreamsScreen";
 
+import StreamDetails from "../screens/StreamDetailScreen";
+
 export default createAppContainer(createSwitchNavigator({
   // You could add another route here for authentication.
   // Read more at https://reactnavigation.org/docs/en/auth-flow.html
   Main: MainTabNavigator,
   SelectionStreams: SelectionStreams,
+  StreamDetails: StreamDetails,
 }));

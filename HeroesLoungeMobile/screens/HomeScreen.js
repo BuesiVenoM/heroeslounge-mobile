@@ -36,7 +36,6 @@ export default class HomeScreen extends React.Component {
   selectionStreams(){
     console.log("Show streams between: " + this.state.startDate + " and: " + this.state.endDate)
     this.props.navigation.navigate("SelectionStreams", {startDate: this.state.startDate, endDate: this.state.endDate})
-
   }
 
   render() {
